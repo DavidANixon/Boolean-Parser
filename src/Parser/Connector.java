@@ -12,6 +12,11 @@ public final class Connector extends AbstractListSymbol implements ListSymbol  {
         type = connectorType;
     }
 
+    /**
+     * Use this method to construct a new Connector Symbol.
+     * @param type The type of Constructor to be built. A constructor can only be type OR, AND, NOT, OPEN, or CLOSE.
+     * @return A new Connector object of the given type, if the type is valid.
+     */
     public static final Connector build(Type type) {
         if (type == null) {
             throw new NullPointerException("Connector cannot be null");
@@ -21,16 +26,21 @@ public final class Connector extends AbstractListSymbol implements ListSymbol  {
         }
         else
             throw new IllegalArgumentException("Connector cannot take type " + type.toString() +
-                    ". Connector only take types OR, AND, NOT, OPEN, CLOSE");
+                    ". Connector only take types OR, AND, NOT, OPEN, and CLOSE");
     }
 
+    /**
+     * Use this program to return the string representation of the Connector.
+     * @return The Unicode String representation of the Connector
+     */
+    @Override
     public String toString() {
         switch (type) {
             case OR: return "\u2228";
             case AND: return "\u005E";
             case NOT: return "\u00AC";
-            case OPEN: return "OPEN";
-            case CLOSE: return "CLOSE";
+            case OPEN: return "\u0028";
+            case CLOSE: return "\u0029";
             default: return "Unknown connector type";
         }
     }
@@ -45,6 +55,4 @@ public final class Connector extends AbstractListSymbol implements ListSymbol  {
         else
             return false;
     }
-
-
 }
