@@ -3,6 +3,7 @@ package Parser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class BooleanList implements Iterable<ListSymbol> {
 
@@ -10,12 +11,13 @@ public final class BooleanList implements Iterable<ListSymbol> {
     private boolean isFrozen = false;
 
     public final List<ListSymbol> getListRepresentation() {
-        return listRepresentation;
+        List<ListSymbol> listCopy = listRepresentation;
+        return listCopy;
     }
 
     public Iterator<ListSymbol> iterator()
     {
-        return listRepresentation.iterator();
+        return getListRepresentation().iterator();
     }
 
     /**
@@ -25,11 +27,8 @@ public final class BooleanList implements Iterable<ListSymbol> {
      * @return A boolean representing whether the operation changed the list
      */
     public final Boolean add(ListSymbol listSymbol) {
-        if (!isFrozen) {
-            List<ListSymbol> temp = listRepresentation;
-            listRepresentation.add(listSymbol);
-            return temp.equals(listRepresentation);
-        }
+        if (!isFrozen)
+            return listRepresentation.add(listSymbol);
         else
             throw new UnsupportedOperationException("This list has been frozen and can no longer be modified.");
     }
@@ -55,22 +54,55 @@ public final class BooleanList implements Iterable<ListSymbol> {
     }
 
     /**
+     * A wrapper for the add method that takes another Boolean List
+     * It iterates through the list and calls other add wrappers depending
+     * on the type of the current symbol
+     * @param booleanList the new list to be added to this Boolean List
+     * @return A boolean representing whether the operation changed the list
+     */
+    public final Boolean add(BooleanList booleanList) {
+        Symbol currentSymbol;
+        BooleanList tempList = booleanList;
+        Iterator<ListSymbol> iterator = booleanList.iterator();
+
+        while (iterator.hasNext()) {
+            currentSymbol = iterator.next();
+            if (currentSymbol.getType().equals(Type.VARIABLE)) {
+                this.add(currentSymbol.toString());
+            }
+            else if (currentSymbol.getType().isValidConnectorType()) {
+                this.add(currentSymbol.getType());
+            }
+            else
+                throw new UnsupportedOperationException("Could not add list to boolean list");
+        }
+        return didListChange(tempList, booleanList);
+    }
+
+    /**
+     * This method calculates the complexity of a List by counting the number of ORs and ANDs
+     * @return a long representation of the complexity of this Boolean List
+     */
+    public final long complexity() {
+        return listRepresentation.stream()
+                .filter(Symbol -> Symbol.complexity() == 1)
+                .count();
+    }
+
+    /**
      * This method iterates through the boolean list and builds a string using each Symbol's toString method.
      * @return A String representation of the elements in the list
      */
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        Iterator listIterator = listRepresentation.iterator();
-        while (listIterator.hasNext()) {
-            stringBuilder.append(listIterator.next().toString());
-            stringBuilder.append(' ');
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length()-1);
-        return stringBuilder.toString();
+        return listRepresentation.stream().map(Symbol::toString).collect(Collectors.joining(" "));
     }
 
-    public final void freeze() {
+    public final void freeze() { // could also set listRepresentation = Collections.UnmodifiableList
         isFrozen = true;
+    }
+
+    private final boolean didListChange(BooleanList tempList, BooleanList booleanList) {
+        return (!tempList.equals(booleanList));
     }
 }

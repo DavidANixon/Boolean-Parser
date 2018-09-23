@@ -7,25 +7,24 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
 
 public class JUnitTest {
+
+    private BooleanList booleanList = new BooleanList();
     @Test
     public void variableToListAndToStringTest() {
         Variable varA = Variable.build("a");
-        System.out.println(varA.toString());
         String varADesiredToString = "a";
-        assertEquals(varADesiredToString, varA.toList().toString());
+        assertEquals("Testing Variable.build('a')", varADesiredToString, varA.toList().toString());
     }
 
     @Test
     public void connectorToListAndToStringTest() {
         Connector connectorA = Connector.build(Type.AND);
-        System.out.println(connectorA.toString());
         String varADesiredToString = "^";
-        assertEquals(varADesiredToString, connectorA.toList().toString());
+        assertEquals("Testing Connector.build(Type.AND)", varADesiredToString, connectorA.toList().toString());
     }
 
     @Test
     public void booleanListToStringTest() {
-        BooleanList booleanList = new BooleanList();
         String desiredListString = "a ^ b";
 
         Variable varA = Variable.build("a");
@@ -37,20 +36,18 @@ public class JUnitTest {
         Variable varB = Variable.build("b");
         booleanList.add(varB);
 
-        System.out.println(booleanList.toString());
-        assertEquals(desiredListString, booleanList.toString());
+        assertEquals("Testing Boolean toString of 'a ^ b'", desiredListString, booleanList.toString());
     }
 
     @Test
     public void booleanListConvenienceTest() {
-        BooleanList booleanList = new BooleanList();
         String desiredListString = "a \u00AC b";
 
         booleanList.add("a");
         booleanList.add(Type.NOT);
         booleanList.add("b");
 
-        assertEquals(desiredListString, booleanList.toString());
+        assertEquals("Testing convenience methods on add('a'), add(Type.NOT), and add('b')", desiredListString, booleanList.toString());
     }
 
     @Rule
@@ -60,7 +57,6 @@ public class JUnitTest {
     public void freezeTest() throws Exception {
         expectedException.expect(UnsupportedOperationException.class);
         expectedException.expectMessage("This list has been frozen and can no longer be modified.");
-        BooleanList booleanList = new BooleanList();
         Variable varA = Variable.build("a");
         booleanList.add(varA);
 
@@ -80,4 +76,68 @@ public class JUnitTest {
         //Connector cannot take type Variable so this should throw an exception
         Connector.build(Type.VARIABLE);
     }
+
+    @Test
+    public void connectorNullTypeTest() throws Exception {
+        expectedException.expect(NullPointerException.class);
+        expectedException.expectMessage("Connector cannot be null.");
+
+        Connector.build(null);
+    }
+
+    @Test
+    public void booleanListComplexityTest() {
+        long desiredLong = 2;
+
+        Variable varA = Variable.build("a");
+        booleanList.add(varA);
+
+        Connector connectorAND = Connector.build(Type.AND);
+        booleanList.add(connectorAND);
+
+        Variable varB = Variable.build("b");
+        booleanList.add(varB);
+
+        Connector connectorOR = Connector.build(Type.OR);
+        booleanList.add(connectorOR);
+
+        assertEquals(desiredLong, booleanList.complexity());
+    }
+
+    @Test
+    public void termToString() {
+        String desiredString = "varA";
+
+        Term term = Term.build(Variable.build("varA"));
+
+        assertEquals(desiredString, term.toString());
+    }
+
+    @Test
+    public void expressionSingleTermToString() {
+        String desiredString = "A";
+
+        Expression expression = Expression.build(true, Term.build(Variable.build("A")));
+        assertEquals(desiredString, expression.toString());
+    }
+
+    @Test
+    public void expressionSingleNotToString() {
+        String desiredString = "\u00AC A";
+
+        Expression expression = Expression.build(false, Term.build(Variable.build("A")));
+        assertEquals(desiredString, expression.toString());
+    }
+
+    @Test
+    public void expressionJoinTermsToString() {
+        String desiredString = "A ^ B";
+        Expression expression1 = Expression.build(true, Term.build(Variable.build("A")));
+        Expression expression2 = Expression.build(true, Term.build(Variable.build("B")));
+
+
+        Expression expression = Expression.build(true, expression1, expression2);
+        assertEquals(desiredString, expression.toString());
+    }
+
 }

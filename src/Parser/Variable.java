@@ -1,6 +1,9 @@
 package Parser;
 
-public final class Variable extends AbstractListSymbol implements ListSymbol {
+import java.util.Objects;
+import static Parser.Type.VARIABLE;
+
+public final class Variable extends AbstractListSymbol implements TreeSymbol {
 
     private final String representation;
 
@@ -8,8 +11,8 @@ public final class Variable extends AbstractListSymbol implements ListSymbol {
         return representation;
     }
 
-    public Type getType() {
-        return Type.VARIABLE;
+    public final Type getType() {
+        return VARIABLE;
     }
 
     private Variable (String variableRepresentation) {
@@ -22,14 +25,19 @@ public final class Variable extends AbstractListSymbol implements ListSymbol {
      * @return A new Variable object with the given  String representation
      */
     public static final Variable build (String variableRepresentation) {
-        if (variableRepresentation != null)
-            return new Variable(variableRepresentation);
-        else
-            throw new NullPointerException("Variable cannot be null.");
+        return new Variable(Objects.requireNonNull(variableRepresentation, "Variable cannot be null."));
+    }
+
+    public final long complexity() {
+        return 0;
+    }
+
+    public Type getStructure() {
+        return VARIABLE;
     }
 
     @Override
     public String toString() {
-        return representation;
+        return getRepresentation();
     }
 }
