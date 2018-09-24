@@ -35,7 +35,7 @@ public final class Term extends AbstractTreeSymbol{
         if (getTerm().getType().equals(Type.VARIABLE)) {
             return term.toList();
         }
-        else if (getTerm().getType().equals(Type.EXPRESSION)){
+        else if (isExpressionInParenthesis()){
             BooleanList booleanList = new BooleanList();
             booleanList.add(Type.OPEN);
             booleanList.add(term.toList());
@@ -53,5 +53,12 @@ public final class Term extends AbstractTreeSymbol{
 
     public final long complexity() {
         return getTerm().complexity();
+    }
+
+    public final boolean isExpressionInParenthesis() {
+        String termString = getTerm().toString();
+        return (getStructure().equals(Type.EXPRESSION)
+                && termString.charAt(0) =='\u0028'
+                && termString.charAt(termString.length()-1) == '\u0029');
     }
 }

@@ -11,8 +11,7 @@ public final class BooleanList implements Iterable<ListSymbol> {
     private boolean isFrozen = false;
 
     public final List<ListSymbol> getListRepresentation() {
-        List<ListSymbol> listCopy = listRepresentation;
-        return listCopy;
+        return List.copyOf(listRepresentation);
     }
 
     public Iterator<ListSymbol> iterator()
