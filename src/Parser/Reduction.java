@@ -10,7 +10,6 @@ final class Reduction {
 
     private final Function<List<Symbol>, TreeSymbol> reduction;
 
-
     private Reduction(List<Type> pattern, Function<List<Symbol>, TreeSymbol> reduction) {
         this.pattern = pattern;
         this.reduction = reduction;
@@ -43,6 +42,6 @@ final class Reduction {
     }
 
     public final Symbol apply(List<Symbol> symbolList) {
-        return reduction.apply(symbolList,);
+        return reduction.apply(symbolList, );
     }
 }
