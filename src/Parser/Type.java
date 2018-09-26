@@ -35,7 +35,6 @@ public enum Type {
         }
     };
 
-
     Type(boolean isValidConnectorType, boolean doesAddComplexity) {
         this.isValidConnectorType = isValidConnectorType;
         this.doesAddComplexity = doesAddComplexity;
