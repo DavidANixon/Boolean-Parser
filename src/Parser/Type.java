@@ -1,9 +1,24 @@
 package Parser;
 
 public enum Type {
-    VARIABLE,
-    TERM,
-    EXPRESSION,
+    VARIABLE {
+        @Override
+        public boolean isPotentialReductionType() {
+            return true;
+        }
+    },
+    TERM {
+        @Override
+        public boolean isPotentialReductionType() {
+            return true;
+        }
+    },
+    EXPRESSION {
+        @Override
+        public boolean isPotentialReductionType() {
+            return true;
+        }
+    },
     OR {
         @Override
         public String toString() {
@@ -64,6 +79,11 @@ public enum Type {
         public boolean isValidConnectorType() {
             return true;
         }
+
+        @Override
+        public boolean isPotentialReductionType() {
+            return true;
+        }
     };
 
     public boolean isValidConnectorType() {
@@ -71,6 +91,10 @@ public enum Type {
     }
 
     public boolean doesAddComplexity() {
+        return false;
+    }
+
+    public boolean isPotentialReductionType() {
         return false;
     }
 }

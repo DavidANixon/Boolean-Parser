@@ -42,6 +42,6 @@ final class Reduction {
     }
 
     public final Symbol apply(List<Symbol> symbolList) {
-        return reduction.apply(symbolList, );
+        return reduction.apply(symbolList);
     }
 }
