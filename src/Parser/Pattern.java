@@ -11,8 +11,8 @@ public enum Pattern {
             return Arrays.asList(Type.VARIABLE);
         }
         @Override
-        public TreeSymbol reduceFunction(Variable variable) {
-            return Term.build(variable);
+        public TreeSymbol reduceFunction(List<Symbol> singleTerm) {
+            return Term.build(singleTerm.get(0));
         }
     },
     EXPRESSION_PERENTHESIS_PATTERN {
@@ -21,8 +21,8 @@ public enum Pattern {
             return Arrays.asList(Type.OPEN, Type.EXPRESSION, Type.CLOSE);
         }
         @Override
-        public TreeSymbol reduceFunction (Expression expression) {
-            return Term.build(expression);
+        public TreeSymbol reduceFunction (List<Symbol> singleExpression) {
+            return Term.build(singleExpression.get(0));
         }
     },
     NOT_TERM_PATTERN {
@@ -30,10 +30,9 @@ public enum Pattern {
         public List<Type> getTypeList() {
             return Arrays.asList(Type.NOT, Type.TERM);
         }
-        public TreeSymbol reduceFunction (Term term) {
-            return Expression.build(false, term);
+        public TreeSymbol reduceFunction (List<Symbol> singleTerm) {
+            return Expression.build(false, singleTerm.get(0));
         }
-
     },
     TERM_PATTERN {
         @Override
@@ -41,8 +40,8 @@ public enum Pattern {
             return Arrays.asList(Type.TERM);
         }
         @Override
-        public TreeSymbol reduceFunction (Term term) {
-            return Expression.build(true, term);
+        public TreeSymbol reduceFunction (List<Symbol> singleTerm) {
+            return Expression.build(true, singleTerm.get(0));
         }
     },
     EXPRESSION_AND_PATTERN {
@@ -51,8 +50,8 @@ public enum Pattern {
             return Arrays.asList(Type.EXPRESSION, Type.AND, Type.EXPRESSION);
         }
         @Override
-        public TreeSymbol reduceFunction (Expression expression1, Expression expression2) {
-            return Expression.build(false, expression1, expression2);
+        public TreeSymbol reduceFunction (List<Symbol> leftAndRightExpression) {
+            return Expression.build(false, leftAndRightExpression.get(0), leftAndRightExpression.get(1));
         }
     },
     EXPRESSION_OR_PATTERN {
@@ -61,24 +60,15 @@ public enum Pattern {
             return Arrays.asList(Type.EXPRESSION, Type.OPEN, Type.EXPRESSION);
         }
         @Override
-        public TreeSymbol reduceFunction (Expression expression1, Expression expression2) {
-            return Expression.build(true, expression1, expression2);
+        public TreeSymbol reduceFunction (List<Symbol> leftAndRightExpression) {
+            return Expression.build(true, leftAndRightExpression.get(0), leftAndRightExpression.get(1));
         }
     };
 
     public List<Type> getTypeList() {
         throw new UnsupportedOperationException("Cannot call type list without pattern specified.");
     }
-    public TreeSymbol reduceFunction (Variable variable) {
-        throw new UnsupportedOperationException("Cannot call reduce function without pattern specified.");
-    }
-    public TreeSymbol reduceFunction (Expression expression) {
-        throw new UnsupportedOperationException("Cannot call reduce function without pattern specified.");
-    }
-    public TreeSymbol reduceFunction (Term term) {
-        throw new UnsupportedOperationException("Cannot call reduce function without pattern specified.");
-    }
-    public TreeSymbol reduceFunction (Expression expression1, Expression expression2) {
+    public TreeSymbol reduceFunction (List<Symbol> symbolList) {
         throw new UnsupportedOperationException("Cannot call reduce function without pattern specified.");
     }
 
