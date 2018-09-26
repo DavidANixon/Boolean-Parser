@@ -7,6 +7,8 @@ public final class Parser{
     private static final HashSet<Type> potentialReduction = new HashSet<Type>(List.of(Type.VARIABLE,
             Type.EXPRESSION, Type.CLOSE, Type.TERM));
 
+    private static final HashSet<Reduction> reductions = new HashSet<Reduction>();
+
 
     public static final State parse(BooleanList input) {
         List<Symbol> workingList = new ArrayList<Symbol>();
