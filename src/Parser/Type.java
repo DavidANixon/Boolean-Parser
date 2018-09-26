@@ -2,15 +2,15 @@ package Parser;
 
 public enum Type {
     VARIABLE (false, false),
-    TERM (false, false),
     EXPRESSION (false, false),
-    OR (true, false) {
+    TERM (false, false),
+    OR (true, true){
         @Override
         public String toString() {
             return "\u2228";
         }
     },
-    AND (true, false) {
+    AND (true, true) {
         @Override
         public String toString() {
             return "\u005E";
@@ -50,5 +50,9 @@ public enum Type {
 
     public boolean isValidConnectorType() {
         return isValidConnectorType;
+    }
+
+    public boolean isPotentialReductionType() {
+        return false;
     }
 }
