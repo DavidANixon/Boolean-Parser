@@ -8,16 +8,16 @@ import java.util.function.Function;
 final class Reduction {
     private final List<Type> pattern;
 
-    private final Function<List<Symbol>, TreeSymbol> reduction;
+    private final Function<List<Symbol>, TreeSymbol> reductionFunction;
 
-    private Reduction(List<Type> pattern, Function<List<Symbol>, TreeSymbol> reduction) {
+    private Reduction(List<Type> pattern, Function<List<Symbol>, TreeSymbol> reductionFunction) {
         this.pattern = pattern;
-        this.reduction = reduction;
+        this.reductionFunction = reductionFunction;
     }
 
     public static final Reduction build(List<Type> pattern, Function<List<Symbol>, TreeSymbol> reduction) {
         Objects.requireNonNull(pattern, "pattern cannot be null");
-        Objects.requireNonNull(reduction, "reduction cannot be null");
+        Objects.requireNonNull(reduction, "reductionFunction cannot be null");
 
         return new Reduction(pattern, reduction);
     }
@@ -42,6 +42,6 @@ final class Reduction {
     }
 
     public final Symbol apply(List<Symbol> symbolList) {
-        return reduction.apply(symbolList);
+        return reductionFunction.apply(symbolList);
     }
 }

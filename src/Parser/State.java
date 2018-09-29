@@ -14,7 +14,7 @@ public final class State {
     static final State build(List<Symbol> workingList) {
         boolean correct = false;
 
-        if (workingList.size() == 1 && workingList.contains(Type.EXPRESSION)) {
+        if (workingList.size() == 1 && workingList.get(0).getType().equals(Type.EXPRESSION)) {
             correct = true;
         }
         return new State(correct, workingList);

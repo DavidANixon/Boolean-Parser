@@ -4,6 +4,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.security.PublicKey;
+
 import static org.junit.Assert.assertEquals;
 
 public class JUnitTest {
@@ -135,9 +137,16 @@ public class JUnitTest {
         Expression expression1 = Expression.build(true, Term.build(Variable.build("A")));
         Expression expression2 = Expression.build(true, Term.build(Variable.build("B")));
 
-
         Expression expression = Expression.build(true, expression1, expression2);
         assertEquals(desiredString, expression.toString());
     }
 
+    @Test
+    public void testVariableParse() {
+        String expected = "A";
+        booleanList.add("A");
+        State result = Parser.parse(booleanList);
+
+        assertEquals(expected, result.getExpression().get(0).toString());
+    }
 }
