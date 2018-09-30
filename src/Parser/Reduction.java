@@ -1,13 +1,11 @@
 package Parser;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
 final class Reduction {
     private final List<Type> pattern;
-
     private final Function<List<Symbol>, TreeSymbol> reductionFunction;
 
     private Reduction(List<Type> pattern, Function<List<Symbol>, TreeSymbol> reductionFunction) {
@@ -26,21 +24,20 @@ final class Reduction {
         return pattern.size();
     }
 
+    /**
+     * Use to determine if this reduction patter matches a given pattern
+     * @param typeList the list to be compared against the pattern
+     * @return a boolean representing whether the two match
+     */
     public final boolean matches(List<Type> typeList) {
-        Iterator iterator1 = typeList.iterator();
-        Iterator iterator2 = pattern.iterator();
-
-        if(typeList.size() != pattern.size()) {
-            return false;
-        }
-
-        while (iterator1.hasNext()) {
-            if (!iterator1.next().equals(iterator2.next()))
-                return false;
-        }
-        return true;
+        return typeList.equals(pattern);
     }
 
+    /**
+     * Use to apply this reduction's function
+     * @param symbolList the list to be reduced
+     * @return a single Symbol representing the reduced list
+     */
     public final Symbol apply(List<Symbol> symbolList) {
         return reductionFunction.apply(symbolList);
     }

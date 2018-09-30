@@ -28,6 +28,10 @@ public final class State {
         return List.copyOf(workingList);
     }
 
+    /**
+     * checks if the working list is in the correct format and returns it if it does
+     * @return a copy of the working list
+     */
     public final List<Symbol> getExpression() {
         if (isCorrect())
             return getWorkingList();

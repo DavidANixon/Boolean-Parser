@@ -1,6 +1,5 @@
 package Parser;
 
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -23,7 +22,7 @@ public enum Pattern {
         public Function<List<Symbol>, TreeSymbol> getReductionFunction () {
 
             Function<List<Symbol>, TreeSymbol> reductionFunction = (ExpressionInParentheses) -> {
-                return Term.build(ExpressionInParentheses.get(0));
+                return Term.build(ExpressionInParentheses.get(1));
             };
 
             return reductionFunction;
@@ -35,7 +34,7 @@ public enum Pattern {
         public Function<List<Symbol>, TreeSymbol> getReductionFunction () {
 
             Function<List<Symbol>, TreeSymbol> reductionFunction = (singleTerm) -> {
-                return Expression.build(false, singleTerm.get(0));
+                return Expression.build(false, singleTerm.get(1));
             };
 
             return reductionFunction;
@@ -54,24 +53,24 @@ public enum Pattern {
         }
     },
 
-    EXPRESSION_AND_PATTERN (Arrays.asList(Type.EXPRESSION, Type.OPEN, Type.EXPRESSION)) {
+    EXPRESSION_AND_PATTERN (Arrays.asList(Type.EXPRESSION, Type.AND, Type.EXPRESSION)) {
         @Override
         public Function<List<Symbol>, TreeSymbol> getReductionFunction () {
 
             Function<List<Symbol>, TreeSymbol> reductionFunction = (leftAndRightExpression) -> {
-                return Expression.build(false, leftAndRightExpression.get(0), leftAndRightExpression.get(1));
+                return Expression.build(true, leftAndRightExpression.get(0), leftAndRightExpression.get(2));
             };
 
             return reductionFunction;
         }
     },
 
-    EXPRESSION_OR_PATTERN (Arrays.asList(Type.EXPRESSION, Type.OPEN, Type.EXPRESSION)) {
+    EXPRESSION_OR_PATTERN (Arrays.asList(Type.EXPRESSION, Type.OR, Type.EXPRESSION)) {
         @Override
         public Function<List<Symbol>, TreeSymbol> getReductionFunction () {
 
             Function<List<Symbol>, TreeSymbol> reductionFunction = (leftAndRightExpression) -> {
-                return Expression.build(true, leftAndRightExpression.get(0), leftAndRightExpression.get(1));
+                return Expression.build(false, leftAndRightExpression.get(0), leftAndRightExpression.get(2));
             };
 
             return reductionFunction;
@@ -89,6 +88,7 @@ public enum Pattern {
         throw new UnsupportedOperationException("Cannot call getReductionFunction without specifying pattern");
     }
 
+    // The constructor for the pattern enum
     Pattern (List<Type> typeList) {
         this.typeList = typeList;
     }
