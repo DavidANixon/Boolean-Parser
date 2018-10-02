@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 final class Reduction {
-    private final List<Type> pattern;
+    public final List<Type> pattern;
     private final Function<List<Symbol>, TreeSymbol> reductionFunction;
 
     private Reduction(List<Type> pattern, Function<List<Symbol>, TreeSymbol> reductionFunction) {

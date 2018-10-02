@@ -19,39 +19,29 @@ public final class Parser{
      */
     public static final State parse(BooleanList input) {
         List<Symbol> workingList = new ArrayList<Symbol>();
-        boolean isParseInProgress = true;
+        boolean isParseInProgress;
 
         Parser.populateReductionsSet();
 
-        for (Symbol symbol : input) { //stream
+        for (Symbol symbol : input) {
             workingList.add(symbol);
-        }
 
-        List<Symbol> tempComparisonList;
-        while (isParseInProgress) {
-            tempComparisonList = workingList;
-            workingList = parseThroughList(tempComparisonList);
-            isParseInProgress = (!tempComparisonList.equals(workingList));
-
+            List<Symbol> tempComparisonList;
+            isParseInProgress = true;
+            while (isParseInProgress) {
+                tempComparisonList = workingList;
+                workingList = applyRelevantReductions(tempComparisonList);
+                isParseInProgress = (!tempComparisonList.equals(workingList));
+            }
         }
 
         return State.build(workingList);
     }
 
-    private static final List<Symbol> parseThroughList(List<Symbol> workingList) {
-        List<Symbol> newWorkingList = new ArrayList<Symbol>();
-
-        for(Symbol symbol : workingList) {
-            newWorkingList.add(symbol);
-            newWorkingList = applyRelevantReductions(newWorkingList);
-        }
-        return newWorkingList;
-    }
-
     // Scans through all reductions and applies all that are matches to the list
     private static final List<Symbol> applyRelevantReductions(List<Symbol> workingList) {
         for (Reduction reduction : reductionSet) {
-            if (symbolListMatchesReduction(workingList, reduction)) {
+            if (symbolListMatchesReduction(getSubListOfLastSymbols(workingList, reduction) , reduction)) {
                 workingList = reduceLastSymbols(workingList, reduction);
             }
         }
@@ -68,27 +58,30 @@ public final class Parser{
 
     // replaces the last few symbols with the result of applying the reduction.
     private static final List<Symbol> reduceLastSymbols(List<Symbol> workingList, Reduction reduction) {
-        List<Symbol> newWorkingList = new ArrayList<Symbol>();
-        newWorkingList.addAll(getSubListOfFirstSymbols(workingList, reduction));
-        newWorkingList.add(reduction.apply(getSubListOfLastSymbols(workingList, reduction)));
+        ListIterator<Symbol> listIterator = getSubListOfLastSymbols(workingList, reduction).listIterator();
 
-        return newWorkingList;
+        Symbol reducedSymbol = reduction.apply(getSubListOfLastSymbols(workingList, reduction));
+
+        while (listIterator.hasNext()) {
+            listIterator.next();
+            listIterator.remove();
+        }
+
+        workingList.add(reducedSymbol);
+        return workingList;
     }
 
     private static final List<Symbol> getSubListOfLastSymbols (List<Symbol> symbolList, Reduction reduction) {
-        return symbolList.subList(
-                symbolList.size() - reduction.size(),
-                symbolList.size());
-    }
-
-    private static final List<Symbol> getSubListOfFirstSymbols(List<Symbol> symbolList, Reduction reduction) {
-        if (symbolList.size() == reduction.size())
-            return new ArrayList<Symbol>();
-        return symbolList.subList(0, symbolList.size() - reduction.size());
+        if (symbolList.size() >= reduction.size()) {
+            return symbolList.subList(
+                    symbolList.size() - reduction.size(),
+                    symbolList.size());
+        }
+        else return Collections.emptyList();
     }
 
     private static final List<Type> convertSymbolListToTypeList(List<Symbol> symbolList) {
-        List<Type> convertedTypeList = new ArrayList<Type>();
+        List<Type> convertedTypeList = new ArrayList<Type>(); // good place for stream
         for (Symbol symbol : symbolList) {
             convertedTypeList.add(symbol.getType());
         }
