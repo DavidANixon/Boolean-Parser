@@ -6,6 +6,7 @@ import org.junit.rules.ExpectedException;
 
 import java.security.PublicKey;
 import java.text.StringCharacterIterator;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -198,7 +199,6 @@ public class JUnitTest {
     @Test
     public void testParenthesisExpression() {
         BooleanList booleanList;
-
         String expected = "\u0028 A \u005E B \u0029";
 
         Expression expression1 = Expression.build(true, Term.build(Variable.build("A")));
@@ -212,6 +212,45 @@ public class JUnitTest {
         assertEquals(expected, result.getExpression().get(0).toString());
     }
 
+    @Test
+    public void testSimplify() {
+        BooleanList booleanList = new BooleanList();
+
+        String expected = "\u0028 A \u005E B \u0029";
+
+        booleanList.add(Type.OPEN);
+        booleanList.add(Type.OPEN);
+        booleanList.add(Type.OPEN);
+        booleanList.add(Type.OPEN);
+        booleanList.add("A");
+        booleanList.add(Type.AND);
+        booleanList.add("B");
+        booleanList.add(Type.CLOSE);
+        booleanList.add(Type.CLOSE);
+        booleanList.add(Type.CLOSE);
+        booleanList.add(Type.CLOSE);
+
+       Term term = Term.build(Parser.parse(booleanList).getExpression().get(0));
+       System.out.println(term.toString());
+
+       assertEquals(expected, term.simplified().toString());
+    }
+
+//    @Test
+////    public void testSingleParenthesesSimplify() {
+////        BooleanList booleanList = new BooleanList();
+////
+////        String expected = "\u0028 A \u005E B \u0029";
+////
+////        booleanList.add(Type.OPEN);
+////        booleanList.add(Type.CLOSE);
+////
+////        Term term = Term.build(Parser.parse(booleanList).getExpression().get(0));
+////        System.out.println(term.toString());
+////
+////        assertEquals(expected, term.simplified().toString());
+////    }
+
     private BooleanList buildExpressionToList(boolean isConjunction,String A, String B, BooleanList bl) {
         Expression expression1 = Expression.build(true, Term.build(Variable.build("A")));
         Expression expression2 = Expression.build(true, Term.build(Variable.build("B")));
@@ -220,4 +259,5 @@ public class JUnitTest {
         bl.add(expression.toList());
         return bl;
     }
+
 }

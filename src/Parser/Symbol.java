@@ -1,9 +1,15 @@
 package Parser;
 
+import java.util.Optional;
+
 public interface Symbol {
-    public Type getType();
+    Type getType();
 
     BooleanList toList();
 
     long complexity();
+
+    Symbol simplified();
+
+    Optional<Symbol> subterm(Symbol symbol);
 }

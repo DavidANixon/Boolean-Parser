@@ -77,7 +77,6 @@ public enum Pattern {
         }
     };
 
-    private Function<List<Symbol>, TreeSymbol> reductionFunction;
     private List<Type> typeList;
 
     public List<Type> getTypeList() {

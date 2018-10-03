@@ -1,5 +1,7 @@
 package Parser;
 
+import java.util.Optional;
+
 abstract class AbstractListSymbol implements ListSymbol {
     /**
      * This method is used to create a boolean list consisting of a single AbstractListSymbol.
@@ -10,5 +12,13 @@ abstract class AbstractListSymbol implements ListSymbol {
        BooleanList boolList = new BooleanList();
        boolList.add(this);
        return boolList;
+    }
+
+    public Symbol simplified() {
+        return this;
+    }
+
+    public Optional<Symbol> subterm(Symbol symbol) {
+        return Optional.of(this);
     }
 }

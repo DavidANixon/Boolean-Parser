@@ -41,26 +41,26 @@ public final class Parser{
     // Scans through all reductions and applies all that are matches to the list
     private static final List<Symbol> applyRelevantReductions(List<Symbol> workingList) {
         for (Reduction reduction : reductionSet) {
-            if (symbolListMatchesReduction(getSubListOfLastSymbols(workingList, reduction) , reduction)) {
-                workingList = reduceLastSymbols(workingList, reduction);
+            if (symbolListMatchesReduction(reduction, getSubListOfReducibleSymbols(reduction, workingList))) {
+                workingList = reduceLastSymbols(reduction, workingList);
             }
         }
         return workingList;
     }
 
-    private static final boolean symbolListMatchesReduction (List<Symbol> symbolList, Reduction reduction) {
+    private static final boolean symbolListMatchesReduction (Reduction reduction, List<Symbol> symbolList) {
         if (symbolList.size() >= reduction.size()) {
-            return reduction.matches(Parser.convertSymbolListToTypeList(getSubListOfLastSymbols(symbolList, reduction)));
+            return reduction.matches(Parser.convertSymbolListToTypeList(getSubListOfReducibleSymbols(reduction, symbolList)));
         }
         else
             return false;
     }
 
     // replaces the last few symbols with the result of applying the reduction.
-    private static final List<Symbol> reduceLastSymbols(List<Symbol> workingList, Reduction reduction) {
-        ListIterator<Symbol> listIterator = getSubListOfLastSymbols(workingList, reduction).listIterator();
+    private static final List<Symbol> reduceLastSymbols(Reduction reduction, List<Symbol> workingList) {
+        ListIterator<Symbol> listIterator = getSubListOfReducibleSymbols(reduction, workingList).listIterator();
 
-        Symbol reducedSymbol = reduction.apply(getSubListOfLastSymbols(workingList, reduction));
+        Symbol reducedSymbol = reduction.apply(getSubListOfReducibleSymbols(reduction, workingList));
 
         while (listIterator.hasNext()) {
             listIterator.next();
@@ -71,7 +71,7 @@ public final class Parser{
         return workingList;
     }
 
-    private static final List<Symbol> getSubListOfLastSymbols (List<Symbol> symbolList, Reduction reduction) {
+    private static final List<Symbol> getSubListOfReducibleSymbols(Reduction reduction, List<Symbol> symbolList) {
         if (symbolList.size() >= reduction.size()) {
             return symbolList.subList(
                     symbolList.size() - reduction.size(),

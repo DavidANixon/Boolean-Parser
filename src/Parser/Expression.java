@@ -1,5 +1,7 @@
 package Parser;
 
+import java.util.Optional;
+
 public final class Expression extends AbstractTreeSymbol {
 
     private final Type type;
@@ -109,6 +111,16 @@ public final class Expression extends AbstractTreeSymbol {
     @Override
     public String toString() {
         return this.toList().toString();
+    }
+
+    @Override
+    public Symbol simplified() {
+        return null;
+    }
+
+    @Override
+    public Optional<Symbol> subterm(Symbol symbol) {
+        return Optional.empty();
     }
 
     private boolean combinesLeftAndRightSubexpressions() {
