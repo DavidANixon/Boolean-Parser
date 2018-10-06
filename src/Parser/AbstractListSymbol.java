@@ -18,7 +18,7 @@ abstract class AbstractListSymbol implements ListSymbol {
         return this;
     }
 
-    public Optional<Symbol> subterm(Symbol symbol) {
-        return Optional.of(this);
+    public Optional<Symbol> subterm() {
+        return Optional.empty();
     }
 }

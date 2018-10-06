@@ -11,5 +11,5 @@ public interface Symbol {
 
     Symbol simplified();
 
-    Optional<Symbol> subterm(Symbol symbol);
+    Optional<Symbol> subterm();
 }

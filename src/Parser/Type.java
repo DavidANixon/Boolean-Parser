@@ -51,8 +51,4 @@ public enum Type {
     public boolean isValidConnectorType() {
         return isValidConnectorType;
     }
-
-    public boolean isPotentialReductionType() {
-        return false;
-    }
 }

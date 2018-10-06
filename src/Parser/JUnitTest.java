@@ -213,7 +213,30 @@ public class JUnitTest {
     }
 
     @Test
-    public void testSimplify() {
+    public void testTermSimplify() {
+        BooleanList booleanList = new BooleanList();
+
+        String expected = "A \u005E B";
+
+        booleanList.add(Type.OPEN);
+        booleanList.add(Type.OPEN);
+        booleanList.add(Type.OPEN);
+        booleanList.add(Type.OPEN);
+        booleanList.add("A");
+        booleanList.add(Type.AND);
+        booleanList.add("B");
+        booleanList.add(Type.CLOSE);
+        booleanList.add(Type.CLOSE);
+        booleanList.add(Type.CLOSE);
+        booleanList.add(Type.CLOSE);
+
+       Term term = Term.build(Parser.parse(booleanList).getExpression().get(0));
+
+       assertEquals(expected, term.simplified().toString());
+    }
+
+    @Test
+    public void testExpressionSimplify() {
         BooleanList booleanList = new BooleanList();
 
         String expected = "\u0028 A \u005E B \u0029";
@@ -230,26 +253,10 @@ public class JUnitTest {
         booleanList.add(Type.CLOSE);
         booleanList.add(Type.CLOSE);
 
-       Term term = Term.build(Parser.parse(booleanList).getExpression().get(0));
-       System.out.println(term.toString());
+        Expression expression = Expression.build(true, Term.build(Parser.parse(booleanList).getExpression().get(0)));
 
-       assertEquals(expected, term.simplified().toString());
+        assertEquals(expected, expression.simplified().toString());
     }
-
-//    @Test
-////    public void testSingleParenthesesSimplify() {
-////        BooleanList booleanList = new BooleanList();
-////
-////        String expected = "\u0028 A \u005E B \u0029";
-////
-////        booleanList.add(Type.OPEN);
-////        booleanList.add(Type.CLOSE);
-////
-////        Term term = Term.build(Parser.parse(booleanList).getExpression().get(0));
-////        System.out.println(term.toString());
-////
-////        assertEquals(expected, term.simplified().toString());
-////    }
 
     private BooleanList buildExpressionToList(boolean isConjunction,String A, String B, BooleanList bl) {
         Expression expression1 = Expression.build(true, Term.build(Variable.build("A")));

@@ -113,14 +113,32 @@ public final class Expression extends AbstractTreeSymbol {
         return this.toList().toString();
     }
 
+
+    /**
+     * Returns a simplified version of the current object, or just the object if it cannot be further simplified
+     * @return s simplified object
+     */
     @Override
     public Symbol simplified() {
-        return null;
+        if (leftSubexpression.subterm().isPresent()) {
+            return Expression.build(true, Term.build(leftSubexpression.subterm().get()));
+        }
+        else
+            return this;
     }
 
+    /**
+     * recursively finds the subterm of the current expression
+     * @return the subterm of this expression
+     */
     @Override
-    public Optional<Symbol> subterm(Symbol symbol) {
-        return Optional.empty();
+    public Optional<Symbol> subterm() {
+
+        if (getStructure() == Type.TERM) {
+            return leftSubexpression.subterm();
+        }
+        else
+            return Optional.of(this);
     }
 
     private boolean combinesLeftAndRightSubexpressions() {
